@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wellbeing</title>
+        <style>
+            /* Google font */
+            @import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+            body {
+                background-color: #121212;
+            }
+
+            #stopwatch {
+                font-family: 'Orbitron', sans-serif;
+                color: #66ff99;
+                font-size: 56px;
+                text-align: center;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+
+            #stopwatch-container {
+                width: 600px;
+                margin: 10% auto;
+                padding: 5% 0;
+                color: #e7eafb;
+                text-align: center;
+                background-color: #202020;
+                box-shadow: 1px 0px 4px 2px #9c9a9a;
+                border-radius: 20px;
+            }
+
+            button {
+                width: 100px;
+                height: 30px;
+                background-color: #202020;
+                color: white;
+                border-radius: 6px;
+                border: 2px solid #fff;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+
+            button:hover {
+                background-color: #fff;
+                color: #202020;
+                cursor: pointer;
+            }
+
+            #setTimePanel {
+                margin: 10px;
+            }
+
+            #pauseButton, #distractedButton, #summaryPanel {
+                display: none;
+            }
+
+            #totalTime, #totalDistractions{
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="stopwatch-container">
+            <h1>Meditate</h1>
+            <div id="stopwatch">00:00</div>
+            <div id="setTimePanel">
+                Meditation time: <input type="number" id="setTime"/> minutes
+            </div>
+            <div id="summaryPanel">
+                <div>Total time: <span id="totalTime"></span></div>
+                <div>Distractions: <span id="totalDistractions"></span></div>
+            </div>
+            <button onclick="start(true)" id="startButton">Start</button>
+            <button onclick="pause()" id="pauseButton">Pause</button>
+            <!--<button onclick="reset()">Reset</button>-->
+            <button onclick="distracted()" id="distractedButton">Distracted</button>
+            <audio id="bell">
+                <source src="sound/tibetan-bell-sound/tibetan-bell-sound.mp3" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+        <script>
+            var stopwatch = document.getElementById("stopwatch");
+            var startBtn = document.getElementById("startButton");
+            var timeoutId = null;
+            var sec = 60;
+            var min = parseInt(document.getElementById('setTime').value) - 1 ?? 0;
+            var distractions = 0;
+            
+            /* function to start stopwatch */
+            function start(flag) {
+                if (flag) {
+                    startBtn.disabled = true;
+                    document.getElementById('startButton').style.display = 'none';
+                    document.getElementById('setTimePanel').style.display = 'none';
+
+                    document.getElementById('pauseButton').style.display = 'inline';
+                    document.getElementById('distractedButton').style.display = 'inline';
+
+                    document.getElementById('bell').play();
+                }
+            
+                timeoutId = setTimeout(function() {
+                    sec = parseInt(sec);
+                    min = parseInt(min);
+            
+                    sec--;
+            
+                    if (sec == -1) {
+                        min -= 1;
+                        sec = 59;
+                    }
+                    if (sec < 10) {
+                        sec = '0' + sec;
+                    }
+                    if (min < 10) {
+                        min = '0' + min;
+                    }
+
+                    stopwatch.innerHTML = min + ':' + sec;
+
+                    if(min == '00' && sec == '00')
+                    {
+                        pause();
+                        document.getElementById('bell').play();
+                        document.getElementById("totalTime").innerHTML = document.getElementById('setTime').value;
+                        document.getElementById("totalDistractions").innerHTML = distractions;
+                        document.getElementById("summaryPanel").style.display = 'block';
+                        return;
+                    }
+            
+                    // calling start() function recursivly to continue stopwatch
+                    start();
+            
+                }, 1000); // setTimeout delay time 10 milliseconds
+            }
+            
+            /* function to pause stopwatch */
+            function pause() {
+                clearTimeout(timeoutId);
+                startBtn.disabled = false;
+            }
+            
+            /* function to reset stopwatch */
+            function reset() {
+                ms = 0;
+                sec = 0;
+                min = 0;
+                clearTimeout(timeoutId);
+                stopwatch.innerHTML = '00:00';
+                startBtn.disabled = false;
+            }
+
+            function distracted() {
+                distractions++;
+            }
+        </script>
+    </body>
+</html>
