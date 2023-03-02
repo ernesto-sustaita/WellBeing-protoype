@@ -120,6 +120,8 @@
 
                     stopwatch.innerHTML = min + ':' + sec;
 
+                    bellPlay = 0;
+
                     if(min == '00' && sec == '00')
                     {
                         pause();
@@ -127,6 +129,16 @@
                         document.getElementById("totalTime").innerHTML = document.getElementById('setTime').value;
                         document.getElementById("totalDistractions").innerHTML = distractions;
                         document.getElementById("summaryPanel").style.display = 'block';
+                        
+                        let intervalId = setInterval(playBell, 18000);
+
+                        function playBell(){
+                            document.getElementById('bell').play();
+                            bellPlay++;
+                            if(bellPlay==2)
+                                clearInterval(intervalId);
+                        }
+
                         return;
                     }
             
