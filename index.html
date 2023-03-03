@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Wellbeing</title>
+        <script src="js/jquery.js"></script>
         <style>
             /* Google font */
             @import url('https://fonts.googleapis.com/css?family=Orbitron');
@@ -51,7 +52,7 @@
                 margin: 10px;
             }
 
-            #pauseButton, #distractedButton, #summaryPanel {
+            #pauseButton, #distractedButton, #summaryPanel, #notifications {
                 display: none;
             }
 
@@ -67,6 +68,7 @@
             <div id="setTimePanel">
                 Meditation time: <input type="number" id="setTime"/> minutes
             </div>
+            <div id="notifications"></div>
             <div id="summaryPanel">
                 <div>Total time: <span id="totalTime"></span></div>
                 <div>Distractions: <span id="totalDistractions"></span></div>
@@ -87,7 +89,7 @@
             var sec = 60;
             var min = parseInt(document.getElementById('setTime').value) - 1 ?? 0;
             var distractions = 0;
-            
+
             /* function to start stopwatch */
             function start(flag) {
                 if (flag) {
@@ -138,6 +140,17 @@
                             if(bellPlay==2)
                                 clearInterval(intervalId);
                         }
+
+                        const date = new Date();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: 'https://localhost:7232/api/Activity',
+                            data: '{"id":0,"userId":1,"type":2,"createdDate":"' + date.toJSON() +'","duration":' + document.getElementById('setTime').value +'}', // or JSON.stringify ({name: 'jonas'}),
+                            success: function(data) { $("#notifications").html("Session summary saved!").css('display','block'); },
+                            contentType: "application/json",
+                            dataType: 'json'
+                        });
 
                         return;
                     }
