@@ -78,7 +78,7 @@
             <!--<button onclick="reset()">Reset</button>-->
             <button onclick="distracted()" id="distractedButton">Distracted</button>
             <audio id="bell">
-                <source src="sound/tibetan-bell-sound/tibetan-bell-sound.mp3" type="audio/mpeg">
+                <source src="sound/tibetan-bell-sound/tibetan-bell-sound-8s.ogg">
                 Your browser does not support the audio tag.
             </audio>
         </div>
@@ -132,7 +132,7 @@
                         document.getElementById("totalDistractions").innerHTML = distractions;
                         document.getElementById("summaryPanel").style.display = 'block';
                         
-                        let intervalId = setInterval(playBell, 18000);
+                        let intervalId = setInterval(playBell, 8000);
 
                         function playBell(){
                             document.getElementById('bell').play();
@@ -146,7 +146,7 @@
                         $.ajax({
                             type: 'POST',
                             url: 'https://localhost:7232/api/Activity',
-                            data: '{"id":0,"userId":1,"type":2,"createdDate":"' + date.toJSON() +'","duration":' + document.getElementById('setTime').value +'}', // or JSON.stringify ({name: 'jonas'}),
+                            data: '{"id":0,"userId":1,"type":2,"createdDate":"' + date.toJSON() +'","duration":' + document.getElementById('setTime').value +',"distractions":' + distractions + '}', // or JSON.stringify ({name: 'jonas'}),
                             success: function(data) { $("#notifications").html("Session summary saved!").css('display','block'); },
                             contentType: "application/json",
                             dataType: 'json'
