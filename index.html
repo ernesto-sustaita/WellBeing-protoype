@@ -71,23 +71,11 @@
                 fill: DarkSlateGray;
             }
 
-            .hours,
-            .minutes,
             .seconds {
                 transform-origin: center;
                 stroke-linecap: round;
             }
 
-            .hours {
-                stroke: fuchsia;
-                stroke-width: 3px; 
-                transition: transform 1s ease-in-out;
-            }
-            .minutes {
-                stroke-width: 2px; 
-                stroke: lime;
-                transition: transform 1s ease-in-out;
-            }
             .seconds {
                 stroke: white;
             }
@@ -107,21 +95,8 @@
                 <svg class="circle" viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="60" cy="60" r="60" class="outer-circle"/>
                   <circle cx="60" cy="60" r="57" />
-                  <!--<line x1="60" y1="20" x2="60" y2="60" class="hours" />
-                  <line x1="60" y1="2" x2="60" y2="60" class="minutes" />-->
                   <line x1="60" y1="0" x2="60" y2="60" class="seconds" />
                   <circle cx="60" cy="60" r="3" class="center-circle" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
-                  <line x1="60" y1="5" x2="60" y2="10" class="line" />
                   <line x1="60" y1="5" x2="60" y2="10" class="line" />
                 </svg>
               </div>            
@@ -150,39 +125,13 @@
             var sec = 60;
             var min = parseInt(document.getElementById('setTime').value) - 1 ?? 0;
             var distractions = 0;
+            var minutesToSeconds = parseInt(document.getElementById('setTime').value) * 60;
+            var degreesForSecond = 360 / minutesToSeconds;
+            var degreesAccumulator = degreesForSecond;
 
-            (function () {
             calculateLines();
-            setInterval(() => {
-            //calculateHourDegrees();
-            //calculateMinuteDegrees();
-            calculateSeconds();
-            }, 1000);
-            })();
 
-                function linearMap(value, min, max, newMin, newMax) {
-                    return newMin + (newMax - newMin) * (value - min) / (max - min);
-                }
-
-                function calculateHourDegrees() {
-                const currentHour = new Date().getHours() - 12;
-                const angle = linearMap(currentHour, 0, 12, 0, 360);
-                document.querySelector(".hours").style.transform = `rotate(${angle}deg)`;
-                }
-
-                function calculateMinuteDegrees() {
-                const currentMinutes = new Date().getMinutes();
-                const angle = linearMap(currentMinutes, 0, 60, 0, 360);
-                document.querySelector(".minutes").style.transform = `rotate(${angle}deg)`;
-                }
-
-                function calculateSeconds() {
-                const currentMinutes = new Date().getSeconds();
-                const angle = linearMap(currentMinutes, 0, 60, 0, 360);
-                document.querySelector(".seconds").style.transform = `rotate(${angle}deg)`;
-                }
-
-                function calculateLines() {
+            function calculateLines() {
                 const lines = document.querySelectorAll(".line");
                 const numberLines = lines.length;
                 for (let i = 0; i < numberLines; i++) {
@@ -190,7 +139,7 @@
                     const angle = linearMap(i, 0, numberLines, 0, 360);
                     line.style.transform = `rotate(${angle}deg)`;
                 }
-                }
+            }
 
             /* function to start stopwatch */
             function start(flag) {
@@ -223,6 +172,8 @@
                     }
 
                     stopwatch.innerHTML = min + ':' + sec;
+                    document.querySelector(".seconds").style.transform = `rotate(${degreesAccumulator}deg)`;
+                    degreesAccumulator+=degreesForSecond;
 
                     bellPlay = 0;
 
